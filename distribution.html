@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NK Traders - পণ্য ব্যবস্থাপনা সফটওয়্যার</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* লগইন পেজ স্টাইল */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .login-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .login-title {
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+        
+        .login-form {
+            margin-top: 20px;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .login-input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .error-message {
+            color: var(--danger);
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* মূল অ্যাপ্লিকেশন স্টাইল */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* সাইডবার স্টাইল */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            transition: all 0.3s;
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .logo p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .menu-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .menu-item.active {
+            background-color: var(--secondary);
+        }
+        
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* মূল কন্টেন্ট স্টাইল */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .company-info {
+            text-align: right;
+        }
+        
+        .company-name {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .company-address {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logout-btn {
+            background-color: var(--danger);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+        
+        /* ফর্ম স্টাইল */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* টেবিল স্টাইল */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        /* রিপোর্ট সেকশন */
+        .report-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .summary-title {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* প্রিন্ট বাটন */
+        .print-btn {
+            background-color: var(--dark);
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        /* মডেল স্টাইল */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        /* রেস্পন্সিভ ডিজাইন */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .menu {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .menu-item {
+                white-space: nowrap;
+            }
+            
+            .report-filters {
+                flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .company-info {
+                text-align: left;
+                margin-top: 10px;
+            }
+            
+            .user-info {
+                margin-top: 10px;
+            }
+        }
+        
+        /* রিপোর্ট টেবিল */
+        .report-table {
+            margin-top: 20px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* কনফার্মেশন ডায়ালগ */
+        .confirmation-dialog {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* স্টক ইনফো */
+        .stock-info {
+            background-color: #e8f5e8;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--success);
+        }
+        
+        .low-stock {
+            background-color: #ffeaa7;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .out-of-stock {
+            background-color: #ffcccc;
+            border-left: 4px solid var(--danger);
+        }
+        
+        /* ক্রেতা স্টেটমেন্ট */
+        .customer-statement {
+            margin-top: 20px;
+        }
+        
+        .statement-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .statement-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .statement-table {
+            margin-top: 20px;
+        }
+        
+        .total-row {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        /* লাভ-ক্ষতি */
+        .profit-loss {
+            background-color: #e8f4fd;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .profit {
+            color: var(--success);
+        }
+        
+        .loss {
+            color: var(--danger);
+        }
+        
+        /* ক্রয় ফর্ম */
+        .purchase-form-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .error-message {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* প্রিন্ট স্টাইল */
+        @media print {
+            .sidebar, .btn, .report-filters, .card-header, .modal, .user-info {
+                display: none !important;
+            }
+            
+            .container {
+                display: block;
+            }
+            
+            .main-content {
+                padding: 0;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            .company-info {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* স্টক ডিসপ্লে */
+        .stock-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .stock-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .stock-value {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <!-- লগইন পেজ -->
+    <div class="login-container" id="login-page">
+        <div class="login-box">
+            <h2 class="login-title">NK Traders</h2>
+            <p>বগুড়া</p>
+            <form class="login-form" id="login-form">
+                <input type="password" class="login-input" id="password" placeholder="পাসওয়ার্ড লিখুন" required>
+                <button type="submit" class="login-btn">লগইন করুন</button>
+                <div class="error-message" id="login-error">ভুল পাসওয়ার্ড! দয়া করে আবার চেষ্টা করুন।</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- মূল অ্যাপ্লিকেশন -->
+    <div class="app-container" id="app">
+        <div class="container">
+            <!-- সাইডবার -->
+            <div class="sidebar">
+                <div class="logo">
+                    <h2>NK Traders</h2>
+                    <p>বগুড়া</p>
+                </div>
+                <ul class="menu">
+                    <li class="menu-item active" data-target="dashboard">
+                        <i>📊</i> ড্যাশবোর্ড
+                    </li>
+                    <li class="menu-item" data-target="products">
+                        <i>📦</i> পণ্য ব্যবস্থাপনা
+                    </li>
+                    <li class="menu-item" data-target="purchase">
+                        <i>🛒</i> ক্রয় ব্যবস্থাপনা
+                    </li>
+                    <li class="menu-item" data-target="sales">
+                        <i>💰</i> বিক্রয় ব্যবস্থাপনা
+                    </li>
+                    <li class="menu-item" data-target="customers">
+                        <i>👥</i> ক্রেতা ব্যবস্থাপনা
+                    </li>
+                    <li class="menu-item" data-target="reports">
+                        <i>📈</i> রিপোর্ট
+                    </li>
+                    <li class="menu-item" data-target="statements">
+                        <i>🧾</i> ক্রেতা স্টেটমেন্ট
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- মূল কন্টেন্ট -->
+            <div class="main-content">
+                <div class="header">
+                    <h1 class="page-title" id="page-title">ড্যাশবোর্ড</h1>
+                    <div class="user-info">
+                        <div class="company-info">
+                            <div class="company-name">NK Traders</div>
+                            <div class="company-address">বগুড়া</div>
+                        </div>
+                        <button class="logout-btn" id="logout-btn">লগ আউট</button>
+                    </div>
+                </div>
+                
+                <!-- ড্যাশবোর্ড কন্টেন্ট -->
+                <div id="dashboard" class="content-section active">
+                    <div class="report-summary">
+                        <div class="summary-card">
+                            <div class="summary-title">মোট পণ্য</div>
+                            <div class="summary-value" id="total-products">0</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-title">মোট ক্রেতা</div>
+                            <div class="summary-value" id="total-customers">0</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-title">আজকের বিক্রয়</div>
+                            <div class="summary-value" id="today-sales">0</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-title">মাসিক বিক্রয়</div>
+                            <div class="summary-value" id="monthly-sales">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">লাভ-ক্ষতি বিশ্লেষণ</h3>
+                        </div>
+                        <div id="profit-loss-analysis">
+                            <div class="no-data">ডেটা লোড হচ্ছে...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">পণ্য মজুত অবস্থা</h3>
+                        </div>
+                        <div id="stock-status">
+                            <div class="no-data">ডেটা লোড হচ্ছে...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">সাম্প্রতিক লেনদেন</h3>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>তারিখ</th>
+                                    <th>ক্রেতা আইডি</th>
+                                    <th>পণ্যের নাম</th>
+                                    <th>পরিমাণ (লিটার)</th>
+                                    <th>মূল্য</th>
+                                    <th>কমিশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-transactions">
+                                <tr>
+                                    <td colspan="6" class="no-data">কোনো লেনদেন পাওয়া যায়নি</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- পণ্য ব্যবস্থাপনা কন্টেন্ট -->
+                <div id="products" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">পণ্য যোগ করুন</h3>
+                        </div>
+                        <form id="product-form">
+                            <div class="form-group">
+                                <label for="product-name">পণ্যের নাম</label>
+                                <input type="text" id="product-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-category">ক্যাটাগরি</label>
+                                <select id="product-category" required>
+                                    <option value="">নির্বাচন করুন</option>
+                                    <option value="তরল">তরল</option>
+                                    <option value="কঠিন">কঠিন</option>
+                                    <option value="গ্যাস">গ্যাস</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-unit">একক</label>
+                                <select id="product-unit" required>
+                                    <option value="">নির্বাচন করুন</option>
+                                    <option value="লিটার">লিটার</option>
+                                    <option value="কেজি">কেজি</option>
+                                    <option value="পিস">পিস</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-price">ক্রয় মূল্য (প্রতি লিটার)</label>
+                                <input type="number" id="product-price" step="0.01" required>
+                            </div>
+                            <button type="submit" class="btn btn-success">পণ্য সংরক্ষণ করুন</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">পণ্য তালিকা</h3>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>পণ্যের নাম</th>
+                                    <th>ক্যাটাগরি</th>
+                                    <th>একক</th>
+                                    <th>ক্রয় মূল্য</th>
+                                    <th>মজুত</th>
+                                    <th>কার্যক্রম</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-list">
+                                <tr>
+                                    <td colspan="6" class="no-data">কোনো পণ্য পাওয়া যায়নি</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- ক্রয় ব্যবস্থাপনা কন্টেন্ট -->
+                <div id="purchase" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">ক্রয় রেকর্ড যোগ করুন</h3>
+                        </div>
+                        <div class="purchase-form-container">
+                            <form id="purchase-form">
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="purchase-product">পণ্য নির্বাচন করুন</label>
+                                            <select id="purchase-product" required>
+                                                <option value="">নির্বাচন করুন</option>
+                                            </select>
+                                            <div class="error-message" id="purchase-product-error">পণ্য নির্বাচন করুন</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="purchase-quantity">পরিমাণ (লিটার)</label>
+                                            <input type="number" id="purchase-quantity" step="0.01" required min="0.01">
+                                            <div class="error-message" id="purchase-quantity-error">সঠিক পরিমাণ লিখুন</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="purchase-price">মূল্য (প্রতি লিটার)</label>
+                                            <input type="number" id="purchase-price" step="0.01" required min="0.01">
+                                            <div class="error-message" id="purchase-price-error">সঠিক মূল্য লিখুন</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-col">
+                                        <div class="form-group">
+                                            <label for="purchase-date">তারিখ</label>
+                                            <input type="date" id="purchase-date" required>
+                                            <div class="error-message" id="purchase-date-error">তারিখ নির্বাচন করুন</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-success">ক্রয় সংরক্ষণ করুন</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">ক্রয় ইতিহাস</h3>
+                            <button class="btn btn-danger" id="clear-purchase-history">সমস্ত ক্রয় ইতিহাস মুছুন</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>তারিখ</th>
+                                    <th>পণ্যের নাম</th>
+                                    <th>পরিমাণ (লিটার)</th>
+                                    <th>মূল্য (প্রতি লিটার)</th>
+                                    <th>মোট খরচ</th>
+                                    <th>কার্যক্রম</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchase-history">
+                                <tr>
+                                    <td colspan="6" class="no-data">কোনো ক্রয় রেকর্ড পাওয়া যায়নি</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- বিক্রয় ব্যবস্থাপনা কন্টেন্ট -->
+                <div id="sales" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">বিক্রয় রেকর্ড যোগ করুন</h3>
+                        </div>
+                        <form id="sales-form">
+                            <div class="form-group">
+                                <label for="sales-customer">ক্রেতা নির্বাচন করুন</label>
+                                <select id="sales-customer" required>
+                                    <option value="">নির্বাচন করুন</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sales-product">পণ্য নির্বাচন করুন</label>
+                                <select id="sales-product" required>
+                                    <option value="">নির্বাচন করুন</option>
+                                </select>
+                            </div>
+                            <div class="stock-display">
+                                <span class="stock-label">বর্তমান মজুত:</span>
+                                <span class="stock-value" id="current-stock">0 লিটার</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="sales-quantity">পরিমাণ (লিটার)</label>
+                                <input type="number" id="sales-quantity" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sales-price">বিক্রয় মূল্য (প্রতি লিটার)</label>
+                                <input type="number" id="sales-price" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sales-commission">কমিশন (প্রতি লিটার)</label>
+                                <input type="number" id="sales-commission" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sales-date">তারিখ</label>
+                                <input type="date" id="sales-date" required>
+                            </div>
+                            <button type="submit" class="btn btn-success" id="sales-submit-btn">বিক্রয় সংরক্ষণ করুন</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">বিক্রয় ইতিহাস</h3>
+                            <button class="btn btn-danger" id="clear-sales-history">সমস্ত বিক্রয় ইতিহাস মুছুন</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>তারিখ</th>
+                                    <th>ক্রেতা আইডি</th>
+                                    <th>পণ্যের নাম</th>
+                                    <th>পরিমাণ (লিটার)</th>
+                                    <th>মূল্য (প্রতি লিটার)</th>
+                                    <th>কমিশন (মোট)</th>
+                                    <th>নিট বিক্রয়</th>
+                                    <th>কার্যক্রম</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-history">
+                                <tr>
+                                    <td colspan="8" class="no-data">কোনো বিক্রয় রেকর্ড পাওয়া যায়নি</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- ক্রেতা ব্যবস্থাপনা কন্টেন্ট -->
+                <div id="customers" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">ক্রেতা যোগ করুন</h3>
+                        </div>
+                        <form id="customer-form">
+                            <div class="form-group">
+                                <label for="customer-id">ক্রেতা আইডি</label>
+                                <input type="text" id="customer-id" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-name">ক্রেতার নাম</label>
+                                <input type="text" id="customer-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-phone">ফোন নম্বর</label>
+                                <input type="text" id="customer-phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-address">ঠিকানা</label>
+                                <textarea id="customer-address" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-commission">কমিশন রেট (প্রতি লিটার)</label>
+                                <input type="number" id="customer-commission" step="0.01" required>
+                            </div>
+                            <button type="submit" class="btn btn-success">ক্রেতা সংরক্ষণ করুন</button>
+                        </form>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">ক্রেতা তালিকা</h3>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ক্রেতা আইডি</th>
+                                    <th>নাম</th>
+                                    <th>ফোন নম্বর</th>
+                                    <th>ঠিকানা</th>
+                                    <th>কমিশন রেট</th>
+                                    <th>কার্যক্রম</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customer-list">
+                                <tr>
+                                    <td colspan="6" class="no-data">কোনো ক্রেতা পাওয়া যায়নি</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- রিপোর্ট কন্টেন্ট -->
+                <div id="reports" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">রিপোর্ট ফিল্টার</h3>
+                        </div>
+                        <div class="report-filters">
+                            <div class="filter-group">
+                                <label for="report-type">রিপোর্টের ধরন</label>
+                                <select id="report-type">
+                                    <option value="daily">দৈনিক রিপোর্ট</option>
+                                    <option value="monthly">মাসিক রিপোর্ট</option>
+                                    <option value="yearly">বার্ষিক রিপোর্ট</option>
+                                    <option value="customer">ক্রেতা অনুযায়ী রিপোর্ট</option>
+                                    <option value="product">পণ্য অনুযায়ী রিপোর্ট</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="report-customer">ক্রেতা নির্বাচন করুন</label>
+                                <select id="report-customer">
+                                    <option value="all">সকল ক্রেতা</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="report-product">পণ্য নির্বাচন করুন</label>
+                                <select id="report-product">
+                                    <option value="all">সকল পণ্য</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="report-date">তারিখ</label>
+                                <input type="date" id="report-date">
+                            </div>
+                            <div class="filter-group">
+                                <label for="report-month">মাস</label>
+                                <input type="month" id="report-month">
+                            </div>
+                            <div class="filter-group">
+                                <label for="report-year">বছর</label>
+                                <select id="report-year">
+                                    <option value="2023">2023</option>
+                                    <option value="2024" selected>2024</option>
+                                    <option value="2025">2025</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="generate-report">রিপোর্ট তৈরি করুন</button>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">রিপোর্ট</h3>
+                            <button class="btn print-btn" id="report-print">প্রিন্ট</button>
+                        </div>
+                        <div id="report-content">
+                            <div class="no-data">রিপোর্ট তৈরি করতে উপরের ফিল্টার ব্যবহার করুন</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ক্রেতা স্টেটমেন্ট কন্টেন্ট -->
+                <div id="statements" class="content-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">ক্রেতা স্টেটমেন্ট তৈরি করুন</h3>
+                        </div>
+                        <div class="report-filters">
+                            <div class="filter-group">
+                                <label for="statement-customer">ক্রেতা নির্বাচন করুন</label>
+                                <select id="statement-customer" required>
+                                    <option value="">নির্বাচন করুন</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="statement-date">তারিখ</label>
+                                <input type="date" id="statement-date">
+                            </div>
+                            <div class="filter-group">
+                                <label for="statement-month">মাস</label>
+                                <input type="month" id="statement-month">
+                            </div>
+                            <div class="filter-group">
+                                <button class="btn btn-primary" id="generate-statement" style="margin-top: 25px;">স্টেটমেন্ট তৈরি করুন</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">ক্রেতা স্টেটমেন্ট</h3>
+                            <button class="btn print-btn" id="statement-print">প্রিন্ট</button>
+                        </div>
+                        <div id="statement-content">
+                            <div class="no-data">ক্রেতা স্টেটমেন্ট তৈরি করতে উপরের ফিল্টার ব্যবহার করুন</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- কনফার্মেশন মডেল -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">নিশ্চিতকরণ</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="confirmation-dialog">
+                <p id="confirmation-message">আপনি কি নিশ্চিত?</p>
+                <div class="confirmation-buttons">
+                    <button class="btn btn-danger" id="confirm-yes">হ্যাঁ</button>
+                    <button class="btn btn-primary" id="confirm-no">না</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ডেটা স্টোরেজ (প্রাথমিকভাবে লোকাল স্টোরেজ ব্যবহার করা হচ্ছে)
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        let sales = JSON.parse(localStorage.getItem('sales')) || [];
+        
+        // ডিলিট অপশন ভেরিয়েবল
+        let currentDeleteAction = null;
+        
+        // লগইন পাসওয়ার্ড
+        const PASSWORD = "884164";
+        
+        // DOM লোড হওয়ার পর স্ক্রিপ্ট এক্সিকিউট করুন
+        document.addEventListener('DOMContentLoaded', function() {
+            // লগইন ফর্ম সাবমিশন
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const password = document.getElementById('password').value;
+                
+                if (password === PASSWORD) {
+                    // লগইন সফল
+                    document.getElementById('login-page').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                    document.getElementById('login-error').style.display = 'none';
+                    
+                    // প্রাথমিক ডেটা লোড করুন
+                    initializeData();
+                } else {
+                    // লগইন ব্যর্থ
+                    document.getElementById('login-error').style.display = 'block';
+                }
+            });
+            
+            // লগ আউট বাটন
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                document.getElementById('app').style.display = 'none';
+                document.getElementById('login-page').style.display = 'flex';
+                document.getElementById('password').value = '';
+                document.getElementById('login-error').style.display = 'none';
+            });
+            
+            // মেনু আইটেম ক্লিক ইভেন্ট
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    
+                    // সক্রিয় মেনু আইটেম আপডেট করুন
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // সক্রিয় কন্টেন্ট সেকশন আপডেট করুন
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.getElementById(target).classList.add('active');
+                    
+                    // পৃষ্ঠার শিরোনাম আপডেট করুন
+                    document.getElementById('page-title').textContent = this.textContent.trim();
+                    
+                    // প্রয়োজন হলে ডেটা রিফ্রেশ করুন
+                    if (target === 'products') {
+                        loadProducts();
+                    } else if (target === 'customers') {
+                        loadCustomers();
+                    } else if (target === 'purchase') {
+                        loadPurchaseForm();
+                        loadPurchaseHistory();
+                    } else if (target === 'sales') {
+                        loadSalesForm();
+                        loadSalesHistory();
+                    } else if (target === 'dashboard') {
+                        loadDashboard();
+                    } else if (target === 'reports') {
+                        loadReportFilters();
+                    } else if (target === 'statements') {
+                        loadStatementFilters();
+                    }
+                });
+            });
+            
+            // ফর্ম সাবমিশন ইভেন্ট
+            document.getElementById('product-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addProduct();
+            });
+            
+            document.getElementById('customer-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addCustomer();
+            });
+            
+            document.getElementById('purchase-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addPurchase();
+            });
+            
+            document.getElementById('sales-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addSale();
+            });
+            
+            // বিক্রয় ফর্মে পণ্য নির্বাচন পরিবর্তন ইভেন্ট
+            document.getElementById('sales-product').addEventListener('change', function() {
+                updateAvailableStock();
+            });
+            
+            // রিপোর্ট জেনারেট ইভেন্ট
+            document.getElementById('generate-report').addEventListener('click', function() {
+                generateReport();
+            });
+            
+            document.getElementById('generate-statement').addEventListener('click', function() {
+                generateStatement();
+            });
+            
+            // প্রিন্ট বাটন ইভেন্ট
+            document.getElementById('print-btn').addEventListener('click', function() {
+                window.print();
+            });
+            
+            document.getElementById('report-print').addEventListener('click', function() {
+                window.print();
+            });
+            
+            document.getElementById('statement-print').addEventListener('click', function() {
+                window.print();
+            });
+            
+            // ইতিহাস মুছুন বাটন
+            document.getElementById('clear-purchase-history').addEventListener('click', function() {
+                showConfirmation("আপনি কি সমস্ত ক্রয় ইতিহাস মুছতে চান? এটি পূর্বাবস্থায় ফেরানো যাবে না।", function() {
+                    purchases = [];
+                    localStorage.setItem('purchases', JSON.stringify(purchases));
+                    loadPurchaseHistory();
+                    updateProductStock();
+                });
+            });
+            
+            document.getElementById('clear-sales-history').addEventListener('click', function() {
+                showConfirmation("আপনি কি সমস্ত বিক্রয় ইতিহাস মুছতে চান? এটি পূর্বাবস্থায় ফেরানো যাবে না।", function() {
+                    sales = [];
+                    localStorage.setItem('sales', JSON.stringify(sales));
+                    loadSalesHistory();
+                    loadDashboard();
+                    updateProductStock();
+                });
+            });
+            
+            // মডেল ক্লোজ ইভেন্ট
+            document.querySelector('.close-btn').addEventListener('click', function() {
+                document.getElementById('confirmation-modal').style.display = 'none';
+            });
+            
+            document.getElementById('confirm-no').addEventListener('click', function() {
+                document.getElementById('confirmation-modal').style.display = 'none';
+            });
+            
+            document.getElementById('confirm-yes').addEventListener('click', function() {
+                if (currentDeleteAction) {
+                    currentDeleteAction();
+                }
+                document.getElementById('confirmation-modal').style.display = 'none';
+            });
+        });
+        
+        // কনফার্মেশন মডেল দেখানোর ফাংশন
+        function showConfirmation(message, action) {
+            document.getElementById('confirmation-message').textContent = message;
+            currentDeleteAction = action;
+            document.getElementById('confirmation-modal').style.display = 'flex';
+        }
+        
+        // পণ্য যোগ করার ফাংশন
+        function addProduct() {
+            const name = document.getElementById('product-name').value;
+            const category = document.getElementById('product-category').value;
+            const unit = document.getElementById('product-unit').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+            
+            if (!name || !category || !unit || !price) {
+                alert('দয়া করে সব ফিল্ড পূরণ করুন!');
+                return;
+            }
+            
+            // একই নামের পণ্য আছে কিনা চেক করুন
+            const existingProduct = products.find(p => p.name.toLowerCase() === name.toLowerCase());
+            if (existingProduct) {
+                alert('এই নামে ইতিমধ্যে একটি পণ্য রয়েছে!');
+                return;
+            }
+            
+            const product = {
+                id: Date.now(),
+                name,
+                category,
+                unit,
+                price,
+                stock: 0 // প্রারম্ভিক স্টক 0
+            };
+            
+            products.push(product);
+            localStorage.setItem('products', JSON.stringify(products));
+            
+            // ফর্ম রিসেট করুন
+            document.getElementById('product-form').reset();
+            
+            // পণ্য তালিকা আপডেট করুন
+            loadProducts();
+            
+            alert('পণ্য সফলভাবে যোগ করা হয়েছে!');
+        }
+        
+        // পণ্য তালিকা লোড করার ফাংশন
+        function loadProducts() {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+            
+            if (products.length === 0) {
+                productList.innerHTML = '<tr><td colspan="6" class="no-data">কোনো পণ্য পাওয়া যায়নি</td></tr>';
+                return;
+            }
+            
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>${product.unit}</td>
+                    <td>${product.price} টাকা</td>
+                    <td>${product.stock} ${product.unit}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-warning" onclick="editProduct(${product.id})">সম্পাদনা</button>
+                        <button class="btn btn-danger" onclick="deleteProduct(${product.id})">মুছুন</button>
+                    </td>
+                `;
+                productList.appendChild(row);
+            });
+        }
+        
+        // ক্রেতা যোগ করার ফাংশন
+        function addCustomer() {
+            const id = document.getElementById('customer-id').value;
+            const name = document.getElementById('customer-name').value;
+            const phone = document.getElementById('customer-phone').value;
+            const address = document.getElementById('customer-address').value;
+            const commission = parseFloat(document.getElementById('customer-commission').value);
+            
+            if (!id || !name || !phone || !commission) {
+                alert('দয়া করে সব প্রয়োজনীয় ফিল্ড পূরণ করুন!');
+                return;
+            }
+            
+            // ক্রেতা আইডি চেক করুন
+            if (customers.find(c => c.id === id)) {
+                alert('এই আইডি দিয়ে ইতিমধ্যে একজন ক্রেতা রয়েছে!');
+                return;
+            }
+            
+            const customer = {
+                id,
+                name,
+                phone,
+                address,
+                commission
+            };
+            
+            customers.push(customer);
+            localStorage.setItem('customers', JSON.stringify(customers));
+            
+            // ফর্ম রিসেট করুন
+            document.getElementById('customer-form').reset();
+            
+            // ক্রেতা তালিকা আপডেট করুন
+            loadCustomers();
+            
+            alert('ক্রেতা সফলভাবে যোগ করা হয়েছে!');
+        }
+        
+        // ক্রেতা তালিকা লোড করার ফাংশন
+        function loadCustomers() {
+            const customerList = document.getElementById('customer-list');
+            customerList.innerHTML = '';
+            
+            if (customers.length === 0) {
+                customerList.innerHTML = '<tr><td colspan="6" class="no-data">কোনো ক্রেতা পাওয়া যায়নি</td></tr>';
+                return;
+            }
+            
+            customers.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.address || 'নেই'}</td>
+                    <td>${customer.commission} টাকা/লিটার</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-warning" onclick="editCustomer('${customer.id}')">সম্পাদনা</button>
+                        <button class="btn btn-danger" onclick="deleteCustomer('${customer.id}')">মুছুন</button>
+                    </td>
+                `;
+                customerList.appendChild(row);
+            });
+        }
+        
+        // ক্রয় ফর্ম লোড করার ফাংশন
+        function loadPurchaseForm() {
+            const productSelect = document.getElementById('purchase-product');
+            productSelect.innerHTML = '<option value="">নির্বাচন করুন</option>';
+            
+            if (products.length === 0) {
+                productSelect.innerHTML = '<option value="">কোনো পণ্য পাওয়া যায়নি</option>';
+                return;
+            }
+            
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                productSelect.appendChild(option);
+            });
+            
+            // আজকের তারিখ সেট করুন
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('purchase-date').value = today;
+        }
+        
+        // ক্রয় যোগ করার ফাংশন
+        function addPurchase() {
+            // ফর্ম ভ্যালিডেশন
+            if (!validatePurchaseForm()) {
+                return;
+            }
+            
+            const productId = parseInt(document.getElementById('purchase-product').value);
+            const quantity = parseFloat(document.getElementById('purchase-quantity').value);
+            const price = parseFloat(document.getElementById('purchase-price').value);
+            const date = document.getElementById('purchase-date').value;
+            
+            const product = products.find(p => p.id === productId);
+            
+            if (!product) {
+                alert('পণ্য পাওয়া যায়নি!');
+                return;
+            }
+            
+            const purchase = {
+                id: Date.now(),
+                productId,
+                productName: product.name,
+                quantity,
+                price,
+                total: quantity * price,
+                date
+            };
+            
+            purchases.push(purchase);
+            localStorage.setItem('purchases', JSON.stringify(purchases));
+            
+            // পণ্যের মজুত আপডেট করুন
+            updateProductStock();
+            
+            // ফর্ম রিসেট করুন
+            document.getElementById('purchase-form').reset();
+            document.getElementById('purchase-date').value = new Date().toISOString().split('T')[0];
+            
+            // ক্রয় ইতিহাস আপডেট করুন
+            loadPurchaseHistory();
+            
+            alert('ক্রয় রেকর্ড সফলভাবে যোগ করা হয়েছে!');
+        }
+        
+        // ক্রয় ফর্ম ভ্যালিডেশন
+        function validatePurchaseForm() {
+            let isValid = true;
+            
+            // সব এরর মেসেজ লুকান
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.style.display = 'none';
+            });
+            
+            const productId = document.getElementById('purchase-product').value;
+            const quantity = document.getElementById('purchase-quantity').value;
+            const price = document.getElementById('purchase-price').value;
+            const date = document.getElementById('purchase-date').value;
+            
+            if (!productId) {
+                document.getElementById('purchase-product-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!quantity || parseFloat(quantity) <= 0) {
+                document.getElementById('purchase-quantity-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!price || parseFloat(price) <= 0) {
+                document.getElementById('purchase-price-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            if (!date) {
+                document.getElementById('purchase-date-error').style.display = 'block';
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // ক্রয় ইতিহাস লোড করার ফাংশন
+        function loadPurchaseHistory() {
+            const purchaseHistory = document.getElementById('purchase-history');
+            purchaseHistory.innerHTML = '';
+            
+            if (purchases.length === 0) {
+                purchaseHistory.innerHTML = '<tr><td colspan="6" class="no-data">কোনো ক্রয় রেকর্ড পাওয়া যায়নি</td></tr>';
+                return;
+            }
+            
+            // ক্রয় তারিখ অনুসারে সাজান (নতুন থেকে পুরাতন)
+            const sortedPurchases = [...purchases].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sortedPurchases.forEach(purchase => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${purchase.date}</td>
+                    <td>${purchase.productName}</td>
+                    <td>${purchase.quantity}</td>
+                    <td>${purchase.price} টাকা</td>
+                    <td>${purchase.total.toFixed(2)} টাকা</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-danger" onclick="deletePurchase(${purchase.id})">মুছুন</button>
+                    </td>
+                `;
+                purchaseHistory.appendChild(row);
+            });
+        }
+        
+        // বিক্রয় ফর্ম লোড করার ফাংশন
+        function loadSalesForm() {
+            const customerSelect = document.getElementById('sales-customer');
+            customerSelect.innerHTML = '<option value="">নির্বাচন করুন</option>';
+            
+            customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = `${customer.id} - ${customer.name}`;
+                customerSelect.appendChild(option);
+            });
+            
+            const productSelect = document.getElementById('sales-product');
+            productSelect.innerHTML = '<option value="">নির্বাচন করুন</option>';
+            
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                productSelect.appendChild(option);
+            });
+            
+            // আজকের তারিখ সেট করুন
+            document.getElementById('sales-date').valueAsDate = new Date();
+            
+            // স্টক তথ্য আপডেট করুন
+            updateAvailableStock();
+        }
+        
+        // বিক্রয় যোগ করার ফাংশন
+        function addSale() {
+            const customerId = document.getElementById('sales-customer').value;
+            const productId = parseInt(document.getElementById('sales-product').value);
+            const quantity = parseFloat(document.getElementById('sales-quantity').value);
+            const price = parseFloat(document.getElementById('sales-price').value);
+            const commission = parseFloat(document.getElementById('sales-commission').value);
+            const date = document.getElementById('sales-date').value;
+            
+            if (!customerId || !productId || !quantity || !price || !commission || !date) {
+                alert('দয়া করে সব ফিল্ড পূরণ করুন!');
+                return;
+            }
+            
+            // মজুত পরীক্ষা করুন
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                alert('পণ্য পাওয়া যায়নি!');
+                return;
+            }
+            
+            if (product.stock < quantity) {
+                alert(`দুঃখিত! ${product.name} এর পর্যাপ্ত মজুত নেই। মজুত আছে: ${product.stock} লিটার`);
+                return;
+            }
+            
+            const customer = customers.find(c => c.id === customerId);
+            
+            const total = quantity * price;
+            const commissionAmount = quantity * commission; // প্রতি লিটারে কমিশন
+            const netSale = total - commissionAmount;
+            
+            const sale = {
+                id: Date.now(),
+                customerId,
+                customerName: customer.name,
+                productId,
+                productName: product.name,
+                quantity,
+                price,
+                total,
+                commission: commission, // প্রতি লিটারে কমিশন
+                commissionAmount,
+                netSale,
+                date
+            };
+            
+            sales.push(sale);
+            localStorage.setItem('sales', JSON.stringify(sales));
+            
+            // পণ্যের মজুত আপডেট করুন
+            updateProductStock();
+            
+            // ফর্ম রিসেট করুন
+            document.getElementById('sales-form').reset();
+            document.getElementById('sales-date').valueAsDate = new Date();
+            document.getElementById('current-stock').textContent = '0 লিটার';
+            
+            // বিক্রয় ইতিহাস আপডেট করুন
+            loadSalesHistory();
+            
+            alert('বিক্রয় রেকর্ড সফলভাবে যোগ করা হয়েছে!');
+        }
+        
+        // বিক্রয় ইতিহাস লোড করার ফাংশন
+        function loadSalesHistory() {
+            const salesHistory = document.getElementById('sales-history');
+            salesHistory.innerHTML = '';
+            
+            if (sales.length === 0) {
+                salesHistory.innerHTML = '<tr><td colspan="8" class="no-data">কোনো বিক্রয় রেকর্ড পাওয়া যায়নি</td></tr>';
+                return;
+            }
+            
+            sales.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.date}</td>
+                    <td>${sale.customerId}</td>
+                    <td>${sale.productName}</td>
+                    <td>${sale.quantity}</td>
+                    <td>${sale.price} টাকা</td>
+                    <td>${sale.commissionAmount.toFixed(2)} টাকা</td>
+                    <td>${sale.netSale.toFixed(2)} টাকা</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-danger" onclick="deleteSale(${sale.id})">মুছুন</button>
+                    </td>
+                `;
+                salesHistory.appendChild(row);
+            });
+        }
+        
+        // পণ্যের মজুত আপডেট করার ফাংশন
+        function updateProductStock() {
+            // প্রথমে প্রারম্ভিক স্টক রিসেট করুন
+            products.forEach(product => {
+                let currentStock = 0;
+                
+                // ক্রয় যোগ করুন
+                const productPurchases = purchases.filter(p => p.productId === product.id);
+                productPurchases.forEach(purchase => {
+                    currentStock += purchase.quantity;
+                });
+                
+                // বিক্রয় বিয়োগ করুন
+                const productSales = sales.filter(s => s.productId === product.id);
+                productSales.forEach(sale => {
+                    currentStock -= sale.quantity;
+                });
+                
+                product.stock = currentStock;
+            });
+            
+            localStorage.setItem('products', JSON.stringify(products));
+            loadProducts();
+            loadDashboard();
+        }
+        
+        // উপলব্ধ মজুত আপডেট করার ফাংশন
+        function updateAvailableStock() {
+            const productId = parseInt(document.getElementById('sales-product').value);
+            const product = products.find(p => p.id === productId);
+            
+            if (product) {
+                document.getElementById('current-stock').textContent = `${product.stock} ${product.unit}`;
+                
+                // স্টক অবস্থা অনুযায়ী রং পরিবর্তন করুন
+                const stockElement = document.getElementById('current-stock');
+                if (product.stock <= 0) {
+                    stockElement.style.backgroundColor = '#ffcccc';
+                    stockElement.style.color = '#c0392b';
+                } else if (product.stock < 10) {
+                    stockElement.style.backgroundColor = '#ffeaa7';
+                    stockElement.style.color = '#d35400';
+                } else {
+                    stockElement.style.backgroundColor = '#e8f5e8';
+                    stockElement.style.color = '#27ae60';
+                }
+            } else {
+                document.getElementById('current-stock').textContent = '0 লিটার';
+                document.getElementById('current-stock').style.backgroundColor = '#f8f9fa';
+                document.getElementById('current-stock').style.color = '#666';
+            }
+        }
+        
+        // লাভ-ক্ষতি বিশ্লেষণ করার ফাংশন - সংশোধিত
+        function calculateProfitLoss() {
+            let totalSalesRevenue = 0;
+            let totalCommission = 0;
+            let totalPurchaseCost = 0;
+            
+            // বিক্রিত পণ্যের ক্রয় মূল্য গণনা করুন
+            sales.forEach(sale => {
+                totalSalesRevenue += sale.total;
+                totalCommission += sale.commissionAmount;
+                
+                // বিক্রিত পণ্যের ক্রয় মূল্য খুঁজে বের করুন
+                const product = products.find(p => p.id === sale.productId);
+                if (product) {
+                    // বিক্রিত পরিমাণের ক্রয় মূল্য
+                    const purchaseCost = sale.quantity * product.price;
+                    totalPurchaseCost += purchaseCost;
+                }
+            });
+            
+            const netRevenue = totalSalesRevenue - totalCommission;
+            const grossProfit = netRevenue - totalPurchaseCost;
+            const profitMargin = totalSalesRevenue > 0 ? (grossProfit / totalSalesRevenue) * 100 : 0;
+            
+            return {
+                totalPurchaseCost,
+                totalSalesRevenue,
+                totalCommission,
+                netRevenue,
+                grossProfit,
+                profitMargin
+            };
+        }
+        
+        // ড্যাশবোর্ড লোড করার ফাংশন
+        function loadDashboard() {
+            // মোট পণ্য
+            document.getElementById('total-products').textContent = products.length;
+            
+            // মোট ক্রেতা
+            document.getElementById('total-customers').textContent = customers.length;
+            
+            // আজকের বিক্রয়
+            const today = new Date().toISOString().split('T')[0];
+            const todaySales = sales.filter(sale => sale.date === today)
+                                   .reduce((sum, sale) => sum + sale.netSale, 0);
+            document.getElementById('today-sales').textContent = todaySales.toFixed(2) + ' টাকা';
+            
+            // মাসিক বিক্রয়
+            const currentMonth = new Date().toISOString().substring(0, 7);
+            const monthlySales = sales.filter(sale => sale.date.startsWith(currentMonth))
+                                     .reduce((sum, sale) => sum + sale.netSale, 0);
+            document.getElementById('monthly-sales').textContent = monthlySales.toFixed(2) + ' টাকা';
+            
+            // লাভ-ক্ষতি বিশ্লেষণ
+            const profitLossAnalysis = document.getElementById('profit-loss-analysis');
+            const analysis = calculateProfitLoss();
+            
+            profitLossAnalysis.innerHTML = `
+                <div class="report-summary">
+                    <div class="summary-card">
+                        <div class="summary-title">বিক্রিত পণ্যের ক্রয় মূল্য</div>
+                        <div class="summary-value">${analysis.totalPurchaseCost.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">মোট বিক্রয় আয়</div>
+                        <div class="summary-value">${analysis.totalSalesRevenue.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">মোট কমিশন</div>
+                        <div class="summary-value">${analysis.totalCommission.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card ${analysis.grossProfit >= 0 ? 'profit' : 'loss'}">
+                        <div class="summary-title">লাভ/ক্ষতি</div>
+                        <div class="summary-value">${analysis.grossProfit.toFixed(2)} টাকা</div>
+                    </div>
+                </div>
+                <div class="stock-info profit-loss">
+                    <strong>লাভের হার:</strong> ${analysis.profitMargin.toFixed(2)}% | 
+                    <strong>নিট আয়:</strong> ${analysis.netRevenue.toFixed(2)} টাকা
+                </div>
+            `;
+            
+            // পণ্য মজুত অবস্থা
+            const stockStatus = document.getElementById('stock-status');
+            stockStatus.innerHTML = '';
+            
+            if (products.length === 0) {
+                stockStatus.innerHTML = '<div class="no-data">কোনো পণ্য পাওয়া যায়নি</div>';
+                return;
+            }
+            
+            products.forEach(product => {
+                let stockClass = 'stock-info';
+                if (product.stock <= 0) {
+                    stockClass += ' out-of-stock';
+                } else if (product.stock < 10) {
+                    stockClass += ' low-stock';
+                }
+                
+                const stockElement = document.createElement('div');
+                stockElement.className = stockClass;
+                stockElement.innerHTML = `
+                    <strong>${product.name}</strong>: ${product.stock} ${product.unit}
+                    ${product.stock <= 0 ? ' (স্টক নেই)' : product.stock < 10 ? ' (স্টক কম)' : ''}
+                `;
+                stockStatus.appendChild(stockElement);
+            });
+            
+            // সাম্প্রতিক লেনদেন
+            const recentTransactions = document.getElementById('recent-transactions');
+            recentTransactions.innerHTML = '';
+            
+            const recentSales = sales.slice(-5).reverse();
+            
+            if (recentSales.length === 0) {
+                recentTransactions.innerHTML = '<tr><td colspan="6" class="no-data">কোনো লেনদেন পাওয়া যায়নি</td></tr>';
+                return;
+            }
+            
+            recentSales.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.date}</td>
+                    <td>${sale.customerId}</td>
+                    <td>${sale.productName}</td>
+                    <td>${sale.quantity}</td>
+                    <td>${sale.total} টাকা</td>
+                    <td>${sale.commissionAmount} টাকা</td>
+                `;
+                recentTransactions.appendChild(row);
+            });
+        }
+        
+        // রিপোর্ট ফিল্টার লোড করার ফাংশন
+        function loadReportFilters() {
+            const customerSelect = document.getElementById('report-customer');
+            customerSelect.innerHTML = '<option value="all">সকল ক্রেতা</option>';
+            
+            customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = `${customer.id} - ${customer.name}`;
+                customerSelect.appendChild(option);
+            });
+            
+            const productSelect = document.getElementById('report-product');
+            productSelect.innerHTML = '<option value="all">সকল পণ্য</option>';
+            
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                productSelect.appendChild(option);
+            });
+            
+            // আজকের তারিখ সেট করুন
+            document.getElementById('report-date').valueAsDate = new Date();
+            
+            // বর্তমান মাস সেট করুন
+            document.getElementById('report-month').value = new Date().toISOString().substring(0, 7);
+        }
+        
+        // স্টেটমেন্ট ফিল্টার লোড করার ফাংশন
+        function loadStatementFilters() {
+            const customerSelect = document.getElementById('statement-customer');
+            customerSelect.innerHTML = '<option value="">নির্বাচন করুন</option>';
+            
+            customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = `${customer.id} - ${customer.name}`;
+                customerSelect.appendChild(option);
+            });
+            
+            // আজকের তারিখ সেট করুন
+            document.getElementById('statement-date').valueAsDate = new Date();
+            
+            // বর্তমান মাস সেট করুন
+            document.getElementById('statement-month').value = new Date().toISOString().substring(0, 7);
+        }
+        
+        // রিপোর্ট তৈরি করার ফাংশন
+        function generateReport() {
+            const reportType = document.getElementById('report-type').value;
+            const customerId = document.getElementById('report-customer').value;
+            const productId = document.getElementById('report-product').value;
+            const date = document.getElementById('report-date').value;
+            const month = document.getElementById('report-month').value;
+            const year = document.getElementById('report-year').value;
+            
+            let filteredSales = [...sales];
+            
+            // ক্রেতা দ্বারা ফিল্টার করুন
+            if (customerId !== 'all') {
+                filteredSales = filteredSales.filter(sale => sale.customerId === customerId);
+            }
+            
+            // পণ্য দ্বারা ফিল্টার করুন
+            if (productId !== 'all') {
+                filteredSales = filteredSales.filter(sale => sale.productId === parseInt(productId));
+            }
+            
+            // রিপোর্ট টাইপ দ্বারা ফিল্টার করুন
+            if (reportType === 'daily') {
+                filteredSales = filteredSales.filter(sale => sale.date === date);
+            } else if (reportType === 'monthly') {
+                filteredSales = filteredSales.filter(sale => sale.date.startsWith(month));
+            } else if (reportType === 'yearly') {
+                filteredSales = filteredSales.filter(sale => sale.date.startsWith(year));
+            }
+            
+            // রিপোর্ট কন্টেন্ট তৈরি করুন
+            const reportContent = document.getElementById('report-content');
+            reportContent.innerHTML = '';
+            
+            if (filteredSales.length === 0) {
+                reportContent.innerHTML = '<div class="no-data">এই ফিল্টারে কোনো ডেটা পাওয়া যায়নি।</div>';
+                return;
+            }
+            
+            // রিপোর্ট হেডার
+            const reportHeader = `
+                <div class="statement-header">
+                    <h3>NK Traders - বিক্রয় রিপোর্ট</h3>
+                    <p>বগুড়া</p>
+                    <p>${getReportTitle(reportType, date, month, year)}</p>
+                </div>
+            `;
+            
+            reportContent.innerHTML = reportHeader;
+            
+            // রিপোর্ট সারাংশ
+            const totalSales = filteredSales.reduce((sum, sale) => sum + sale.total, 0);
+            const totalCommission = filteredSales.reduce((sum, sale) => sum + sale.commissionAmount, 0);
+            const totalNetSales = filteredSales.reduce((sum, sale) => sum + sale.netSale, 0);
+            const totalQuantity = filteredSales.reduce((sum, sale) => sum + sale.quantity, 0);
+            
+            const summaryHTML = `
+                <div class="report-summary">
+                    <div class="summary-card">
+                        <div class="summary-title">মোট বিক্রয়</div>
+                        <div class="summary-value">${totalSales.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">মোট কমিশন</div>
+                        <div class="summary-value">${totalCommission.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">নিট বিক্রয়</div>
+                        <div class="summary-value">${totalNetSales.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">মোট পরিমাণ</div>
+                        <div class="summary-value">${totalQuantity.toFixed(2)} লিটার</div>
+                    </div>
+                </div>
+            `;
+            
+            reportContent.innerHTML += summaryHTML;
+            
+            // বিস্তারিত টেবিল
+            const table = document.createElement('table');
+            table.className = 'report-table';
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>তারিখ</th>
+                        <th>ক্রেতা আইডি</th>
+                        <th>ক্রেতার নাম</th>
+                        <th>পণ্যের নাম</th>
+                        <th>পরিমাণ (লিটার)</th>
+                        <th>মোট বিক্রয়</th>
+                        <th>কমিশন</th>
+                        <th>নিট বিক্রয়</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredSales.map(sale => `
+                        <tr>
+                            <td>${sale.date}</td>
+                            <td>${sale.customerId}</td>
+                            <td>${sale.customerName}</td>
+                            <td>${sale.productName}</td>
+                            <td>${sale.quantity}</td>
+                            <td>${sale.total.toFixed(2)} টাকা</td>
+                            <td>${sale.commissionAmount.toFixed(2)} টাকা</td>
+                            <td>${sale.netSale.toFixed(2)} টাকা</td>
+                        </tr>
+                    `).join('')}
+                    <tr class="total-row">
+                        <td colspan="4"><strong>মোট</strong></td>
+                        <td><strong>${totalQuantity.toFixed(2)} লিটার</strong></td>
+                        <td><strong>${totalSales.toFixed(2)} টাকা</strong></td>
+                        <td><strong>${totalCommission.toFixed(2)} টাকা</strong></td>
+                        <td><strong>${totalNetSales.toFixed(2)} টাকা</strong></td>
+                    </tr>
+                </tbody>
+            `;
+            
+            reportContent.appendChild(table);
+        }
+        
+        // রিপোর্ট টাইটেল তৈরি করার ফাংশন
+        function getReportTitle(reportType, date, month, year) {
+            switch(reportType) {
+                case 'daily':
+                    return `দৈনিক রিপোর্ট - ${date}`;
+                case 'monthly':
+                    return `মাসিক রিপোর্ট - ${month}`;
+                case 'yearly':
+                    return `বার্ষিক রিপোর্ট - ${year}`;
+                case 'customer':
+                    return `ক্রেতা অনুযায়ী রিপোর্ট`;
+                case 'product':
+                    return `পণ্য অনুযায়ী রিপোর্ট`;
+                default:
+                    return 'রিপোর্ট';
+            }
+        }
+        
+        // ক্রেতা স্টেটমেন্ট তৈরি করার ফাংশন
+        function generateStatement() {
+            const customerId = document.getElementById('statement-customer').value;
+            const date = document.getElementById('statement-date').value;
+            const month = document.getElementById('statement-month').value;
+            
+            if (!customerId) {
+                alert('ক্রেতা নির্বাচন করুন');
+                return;
+            }
+            
+            const customer = customers.find(c => c.id === customerId);
+            if (!customer) {
+                alert('ক্রেতা পাওয়া যায়নি');
+                return;
+            }
+            
+            let filteredSales = sales.filter(sale => sale.customerId === customerId);
+            
+            // তারিখ দ্বারা ফিল্টার করুন
+            if (date) {
+                filteredSales = filteredSales.filter(sale => sale.date === date);
+            } else if (month) {
+                filteredSales = filteredSales.filter(sale => sale.date.startsWith(month));
+            }
+            
+            // স্টেটমেন্ট কন্টেন্ট তৈরি করুন
+            const statementContent = document.getElementById('statement-content');
+            statementContent.innerHTML = '';
+            
+            if (filteredSales.length === 0) {
+                statementContent.innerHTML = '<div class="no-data">এই ফিল্টারে কোনো লেনদেন পাওয়া যায়নি।</div>';
+                return;
+            }
+            
+            // স্টেটমেন্ট হেডার
+            const statementHTML = `
+                <div class="customer-statement">
+                    <div class="statement-header">
+                        <h3>NK Traders - ক্রেতা স্টেটমেন্ট</h3>
+                        <p>বগুড়া</p>
+                    </div>
+                    <div class="statement-info">
+                        <div>
+                            <strong>ক্রেতা আইডি:</strong> ${customer.id}<br>
+                            <strong>ক্রেতার নাম:</strong> ${customer.name}<br>
+                            <strong>ফোন নম্বর:</strong> ${customer.phone}
+                        </div>
+                        <div>
+                            <strong>তারিখ:</strong> ${date || month || 'সমস্ত তারিখ'}<br>
+                            <strong>ঠিকানা:</strong> ${customer.address || 'নেই'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            statementContent.innerHTML = statementHTML;
+            
+            // স্টেটমেন্ট সারাংশ
+            const totalSales = filteredSales.reduce((sum, sale) => sum + sale.total, 0);
+            const totalCommission = filteredSales.reduce((sum, sale) => sum + sale.commissionAmount, 0);
+            const totalNetSales = filteredSales.reduce((sum, sale) => sum + sale.netSale, 0);
+            const totalQuantity = filteredSales.reduce((sum, sale) => sum + sale.quantity, 0);
+            
+            const summaryHTML = `
+                <div class="report-summary">
+                    <div class="summary-card">
+                        <div class="summary-title">মোট বিক্রয়</div>
+                        <div class="summary-value">${totalSales.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">মোট কমিশন</div>
+                        <div class="summary-value">${totalCommission.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">নিট বিক্রয়</div>
+                        <div class="summary-value">${totalNetSales.toFixed(2)} টাকা</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">মোট পরিমাণ</div>
+                        <div class="summary-value">${totalQuantity.toFixed(2)} লিটার</div>
+                    </div>
+                </div>
+            `;
+            
+            statementContent.innerHTML += summaryHTML;
+            
+            // বিস্তারিত টেবিল
+            const table = document.createElement('table');
+            table.className = 'report-table statement-table';
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>তারিখ</th>
+                        <th>পণ্যের নাম</th>
+                        <th>পরিমাণ (লিটার)</th>
+                        <th>মূল্য (প্রতি লিটার)</th>
+                        <th>মোট বিক্রয়</th>
+                        <th>কমিশন</th>
+                        <th>নিট বিক্রয়</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredSales.map(sale => `
+                        <tr>
+                            <td>${sale.date}</td>
+                            <td>${sale.productName}</td>
+                            <td>${sale.quantity}</td>
+                            <td>${sale.price} টাকা</td>
+                            <td>${sale.total.toFixed(2)} টাকা</td>
+                            <td>${sale.commissionAmount.toFixed(2)} টাকা</td>
+                            <td>${sale.netSale.toFixed(2)} টাকা</td>
+                        </tr>
+                    `).join('')}
+                    <tr class="total-row">
+                        <td colspan="2"><strong>মোট</strong></td>
+                        <td><strong>${totalQuantity.toFixed(2)} লিটার</strong></td>
+                        <td></td>
+                        <td><strong>${totalSales.toFixed(2)} টাকা</strong></td>
+                        <td><strong>${totalCommission.toFixed(2)} টাকা</strong></td>
+                        <td><strong>${totalNetSales.toFixed(2)} টাকা</strong></td>
+                    </tr>
+                </tbody>
+            `;
+            
+            statementContent.appendChild(table);
+        }
+        
+        // পণ্য সম্পাদনা ফাংশন (সরলীকৃত)
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                document.getElementById('product-name').value = product.name;
+                document.getElementById('product-category').value = product.category;
+                document.getElementById('product-unit').value = product.unit;
+                document.getElementById('product-price').value = product.price;
+                
+                // পণ্য মুছে ফেলুন
+                deleteProduct(id, false);
+            }
+        }
+        
+        // পণ্য মুছে ফেলার ফাংশন
+        function deleteProduct(id, showAlert = true) {
+            showConfirmation('আপনি কি নিশ্চিত যে আপনি এই পণ্যটি মুছতে চান?', function() {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('products', JSON.stringify(products));
+                loadProducts();
+                if (showAlert) {
+                    alert('পণ্য সফলভাবে মুছে ফেলা হয়েছে!');
+                }
+            });
+        }
+        
+        // ক্রেতা সম্পাদনা ফাংশন (সরলীকৃত)
+        function editCustomer(id) {
+            const customer = customers.find(c => c.id === id);
+            if (customer) {
+                document.getElementById('customer-id').value = customer.id;
+                document.getElementById('customer-name').value = customer.name;
+                document.getElementById('customer-phone').value = customer.phone;
+                document.getElementById('customer-address').value = customer.address;
+                document.getElementById('customer-commission').value = customer.commission;
+                
+                // ক্রেতা মুছে ফেলুন
+                deleteCustomer(id, false);
+            }
+        }
+        
+        // ক্রেতা মুছে ফেলার ফাংশন
+        function deleteCustomer(id, showAlert = true) {
+            showConfirmation('আপনি কি নিশ্চিত যে আপনি এই ক্রেতাটি মুছতে চান?', function() {
+                customers = customers.filter(c => c.id !== id);
+                localStorage.setItem('customers', JSON.stringify(customers));
+                loadCustomers();
+                if (showAlert) {
+                    alert('ক্রেতা সফলভাবে মুছে ফেলা হয়েছে!');
+                }
+            });
+        }
+        
+        // ক্রয় রেকর্ড মুছে ফেলার ফাংশন
+        function deletePurchase(id) {
+            showConfirmation('আপনি কি এই ক্রয় রেকর্ডটি মুছতে চান?', function() {
+                purchases = purchases.filter(p => p.id !== id);
+                localStorage.setItem('purchases', JSON.stringify(purchases));
+                loadPurchaseHistory();
+                updateProductStock();
+                alert('ক্রয় রেকর্ড সফলভাবে মুছে ফেলা হয়েছে!');
+            });
+        }
+        
+        // বিক্রয় রেকর্ড মুছে ফেলার ফাংশন
+        function deleteSale(id) {
+            showConfirmation('আপনি কি এই বিক্রয় রেকর্ডটি মুছতে চান?', function() {
+                sales = sales.filter(s => s.id !== id);
+                localStorage.setItem('sales', JSON.stringify(sales));
+                loadSalesHistory();
+                loadDashboard();
+                updateProductStock();
+                alert('বিক্রয় রেকর্ড সফলভাবে মুছে ফেলা হয়েছে!');
+            });
+        }
+        
+        // প্রারম্ভিক ডেটা সেট করুন (যদি প্রয়োজন হয়)
+        function initializeData() {
+            if (products.length === 0 && customers.length === 0) {
+                // কিছু উদাহরণ পণ্য যোগ করুন
+                products = [
+                    {
+                        id: 1,
+                        name: "পেট্রোল",
+                        category: "তরল",
+                        unit: "লিটার",
+                        price: 100,
+                        stock: 500
+                    },
+                    {
+                        id: 2,
+                        name: "ডিজেল",
+                        category: "তরল",
+                        unit: "লিটার",
+                        price: 80,
+                        stock: 300
+                    }
+                ];
+                
+                // কিছু উদাহরণ ক্রেতা যোগ করুন
+                customers = [
+                    {
+                        id: "C001",
+                        name: "রহিম করিম",
+                        phone: "01712345678",
+                        address: "ঢাকা",
+                        commission: 5
+                    },
+                    {
+                        id: "C002",
+                        name: "করিম আহমেদ",
+                        phone: "01887654321",
+                        address: "চট্টগ্রাম",
+                        commission: 7
+                    }
+                ];
+                
+                localStorage.setItem('products', JSON.stringify(products));
+                localStorage.setItem('customers', JSON.stringify(customers));
+            }
+            
+            // সব ডেটা লোড করুন
+            loadProducts();
+            loadCustomers();
+            loadPurchaseForm();
+            loadPurchaseHistory();
+            loadSalesForm();
+            loadSalesHistory();
+            loadDashboard();
+            loadReportFilters();
+            loadStatementFilters();
+        }
+    </script>
+</body>
+</html>
